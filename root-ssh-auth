@@ -1,27 +1,50 @@
 #!/bin/bash
 
-# Update System and install sudo if not present
-apt -y update
-apt -y install sudo
+# Function to detect the package manager and install sudo if not present
+install_sudo() {
+    if command -v apt > /dev/null; then
+        apt -y update && apt -y install sudo
+    elif command -v yum > /dev/null; then
+        yum -y install sudo
+    elif command -v dnf > /dev/null; then
+        dnf -y install sudo
+    else
+        echo "Unsupported package manager. Please install sudo manually."
+        exit 1
+    fi
+}
+
+# Install sudo if not already present
+install_sudo
 
 # Function to enable password-based authentication
 enable_password_auth() {
-    sudo sed -i '/^#PasswordAuthentication yes/c\PasswordAuthentication yes' /etc/ssh/sshd_config
-    sudo sed -i '/^#ChallengeResponseAuthentication yes/c\ChallengeResponseAuthentication yes' /etc/ssh/sshd_config
-    sudo sed -i '/^#PermitRootLogin prohibit-password/c\PermitRootLogin yes' /etc/ssh/sshd_config
-    echo "Password-based authentication for all users enabled."
-    echo "Root login enabled."
-    sudo systemctl restart ssh
+    if [[ -f /etc/ssh/sshd_config ]]; then
+        sudo sed -i '/^#PasswordAuthentication yes/c\PasswordAuthentication yes' /etc/ssh/sshd_config
+        sudo sed -i '/^#ChallengeResponseAuthentication yes/c\ChallengeResponseAuthentication yes' /etc/ssh/sshd_config
+        sudo sed -i '/^#PermitRootLogin prohibit-password/c\PermitRootLogin yes' /etc/ssh/sshd_config
+        echo "Password-based authentication for all users enabled."
+        echo "Root login enabled."
+    else
+        echo "/etc/ssh/sshd_config not found. Unable to configure SSH."
+        exit 1
+    fi
+    sudo systemctl restart sshd || sudo systemctl restart ssh
 }
 
 # Function to disable password-based authentication
 disable_password_auth() {
-    sudo sed -i '/^PasswordAuthentication yes/c\#PasswordAuthentication yes' /etc/ssh/sshd_config
-    sudo sed -i '/^ChallengeResponseAuthentication yes/d' /etc/ssh/sshd_config
-    sudo sed -i '/^PermitRootLogin yes/d' /etc/ssh/sshd_config
-    echo "Password-based authentication for all users disabled."
-    echo "Root login disabled."
-    sudo systemctl restart ssh
+    if [[ -f /etc/ssh/sshd_config ]]; then
+        sudo sed -i '/^PasswordAuthentication yes/c\#PasswordAuthentication yes' /etc/ssh/sshd_config
+        sudo sed -i '/^ChallengeResponseAuthentication yes/d' /etc/ssh/sshd_config
+        sudo sed -i '/^PermitRootLogin yes/d' /etc/ssh/sshd_config
+        echo "Password-based authentication for all users disabled."
+        echo "Root login disabled."
+    else
+        echo "/etc/ssh/sshd_config not found. Unable to configure SSH."
+        exit 1
+    fi
+    sudo systemctl restart sshd || sudo systemctl restart ssh
 }
 
 # Prompt user for enabling or disabling password-based authentication for all users
