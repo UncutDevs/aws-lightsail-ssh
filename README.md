@@ -1,6 +1,6 @@
 # SSH-Auth-Manager
 
-**SSH-Auth-Manager** is a simple and interactive Bash script that allows you to enable or disable password-based authentication on your SSH server. This tool is especially useful for quickly configuring SSH access security on cloud instances, such as AWS Lightsail or EC2.
+**SSH-Auth-Manager** is a simple and interactive Bash script that allows you to enable or disable password-based authentication on your SSH server. This tool is especially useful for quickly configuring SSH access security on cloud instances, such as AWS Lightsail or Google Cloud.
 
 ## Features
 
