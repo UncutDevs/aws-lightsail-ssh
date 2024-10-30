@@ -10,7 +10,6 @@
 - Easy-to-use interactive prompts
 
 ## Requirements
-
 - A Linux server with `bash` and `systemctl` (default for most modern Linux distributions)
 - `sudo` privileges to modify SSH configuration
 
@@ -23,8 +22,10 @@
    ```
 4. Now you can login using password or you can also disable it as well for security.
 
-***NOTE***
+## For Enabling Root User Direct Login
+**NOTE**
 This script does not allow direct root login if you want to login diectly as root then you can run this followin code:
+
 1. Set a new root password first by loggin in as root user and running this command
 **passwd**
 2. Run this command
