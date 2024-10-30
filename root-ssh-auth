@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Update System and install sudo if not present
+apt -y update
+apt -y install sudo
+
 # Function to enable password-based authentication
 enable_password_auth() {
     sudo sed -i '/^#PasswordAuthentication yes/c\PasswordAuthentication yes' /etc/ssh/sshd_config
