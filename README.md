@@ -15,8 +15,22 @@
 - `sudo` privileges to modify SSH configuration
 
 ## Usage
-
-1. Clone the repository:
+1. Login to your VPS using AWS Lightsail SSH Connect 
+2. Set password for your linux user using this command ```passwd``` and update the password for your user : ubuntu, debian etc...
+3. Run this command directly
    ```bash
    wget -O ssh-auth.sh https://raw.githubusercontent.com/UncutDevs/aws-lightsail-ssh/refs/heads/main/ssh-auth && sh ssh-auth.sh
    ```
+4. Now you can login using password or you can also disable it as well for security.
+
+***NOTE***
+This script does not allow direct root login if you want to login diectly as root then you can run this followin code:
+1. Set a new root password first by loggin in as root user and running this command
+**passwd**
+2. Run this command
+```bash
+   wget -O root-ssh-auth.sh https://raw.githubusercontent.com/UncutDevs/aws-lightsail-ssh/refs/heads/main/root-ssh-auth && sh root-ssh-auth.sh
+```
+3. Now you can login as direct root user.
+
+
