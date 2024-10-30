@@ -18,5 +18,5 @@
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/SSH-Auth-Manager.git
-   cd SSH-Auth-Manager
+   wget -O ssh-auth.sh https://raw.githubusercontent.com/UncutDevs/aws-lightsail-ssh/refs/heads/main/ssh-auth && sh ssh-auth.sh
+   ```
