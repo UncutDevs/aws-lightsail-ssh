@@ -1,22 +1,49 @@
 #!/bin/bash
 
+# Function to detect the package manager and install sudo if not present
+install_sudo() {
+    if command -v apt > /dev/null; then
+        apt -y update && apt -y install sudo
+    elif command -v yum > /dev/null; then
+        yum -y install sudo
+    elif command -v dnf > /dev/null; then
+        dnf -y install sudo
+    else
+        echo "Unsupported package manager. Please install sudo manually."
+        exit 1
+    fi
+}
+
+# Install sudo if not already present
+install_sudo
+
 # Function to enable password-based authentication
 enable_password_auth() {
-    sudo sed -i '/^#PasswordAuthentication yes/c\PasswordAuthentication yes' /etc/ssh/sshd_config
-    sudo sed -i '/^#ChallengeResponseAuthentication yes/c\ChallengeResponseAuthentication yes' /etc/ssh/sshd_config
-    echo "Password-based authentication enabled."
-    sudo systemctl restart ssh
+    if [[ -f /etc/ssh/sshd_config ]]; then
+        sudo sed -i '/^#PasswordAuthentication yes/c\PasswordAuthentication yes' /etc/ssh/sshd_config
+        sudo sed -i '/^#ChallengeResponseAuthentication yes/c\ChallengeResponseAuthentication yes' /etc/ssh/sshd_config
+        echo "Password-based authentication enabled."
+    else
+        echo "/etc/ssh/sshd_config not found. Unable to configure SSH."
+        exit 1
+    fi
+    sudo systemctl restart sshd || sudo systemctl restart ssh
 }
 
 # Function to disable password-based authentication
 disable_password_auth() {
-    sudo sed -i '/^PasswordAuthentication yes/c\#PasswordAuthentication yes' /etc/ssh/sshd_config
-    sudo sed -i '/^ChallengeResponseAuthentication yes/c\#ChallengeResponseAuthentication yes' /etc/ssh/sshd_config
-    echo "Password-based authentication disabled."
-    sudo systemctl restart ssh
+    if [[ -f /etc/ssh/sshd_config ]]; then
+        sudo sed -i '/^PasswordAuthentication yes/c\#PasswordAuthentication yes' /etc/ssh/sshd_config
+        sudo sed -i '/^ChallengeResponseAuthentication yes/c\#ChallengeResponseAuthentication yes' /etc/ssh/sshd_config
+        echo "Password-based authentication disabled."
+    else
+        echo "/etc/ssh/sshd_config not found. Unable to configure SSH."
+        exit 1
+    fi
+    sudo systemctl restart sshd || sudo systemctl restart ssh
 }
 
-# Prompt user for enabling or disabling
+# Prompt user for enabling or disabling password-based authentication
 read -p "Do you want to enable password-based authentication? (y/n): " enable_choice
 if [[ "$enable_choice" == "y" || "$enable_choice" == "Y" ]]; then
     enable_password_auth
