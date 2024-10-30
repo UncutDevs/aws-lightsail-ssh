@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Function to enable password-based authentication
+enable_password_auth() {
+    sudo sed -i '/^#PasswordAuthentication yes/c\PasswordAuthentication yes' /etc/ssh/sshd_config
+    sudo sed -i '/^#ChallengeResponseAuthentication yes/c\ChallengeResponseAuthentication yes' /etc/ssh/sshd_config
+    echo "Password-based authentication enabled."
+    sudo systemctl restart ssh
+}
+
+# Function to disable password-based authentication
+disable_password_auth() {
+    sudo sed -i '/^PasswordAuthentication yes/c\#PasswordAuthentication yes' /etc/ssh/sshd_config
+    sudo sed -i '/^ChallengeResponseAuthentication yes/c\#ChallengeResponseAuthentication yes' /etc/ssh/sshd_config
+    echo "Password-based authentication disabled."
+    sudo systemctl restart ssh
+}
+
+# Prompt user for enabling or disabling
+read -p "Do you want to enable password-based authentication? (y/n): " enable_choice
+if [[ "$enable_choice" == "y" || "$enable_choice" == "Y" ]]; then
+    enable_password_auth
+elif [[ "$enable_choice" == "n" || "$enable_choice" == "N" ]]; then
+    read -p "Do you want to disable password-based authentication? (y/n): " disable_choice
+    if [[ "$disable_choice" == "y" || "$disable_choice" == "Y" ]]; then
+        disable_password_auth
+    else
+        echo "No changes made."
+    fi
+else
+    echo "Invalid choice. No changes made."
+fi
