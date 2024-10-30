@@ -24,9 +24,9 @@
 
 ## For Enabling Root User Direct Login
 **NOTE**
-This script does not allow direct root login if you want to login diectly as root then you can run this followin code:
+This script does not allow direct root login if you want to login directly as root then you can run this following code:
 
-1. Set a new root password first by loggin in as root user and running this command
+1. Set a new root password first by logging in as root user and running this command
 **passwd**
 2. Run this command
 ```bash
